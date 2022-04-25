@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "projects": {
+    "constants": "libs/constants",
+    "spa": "apps/spa",
+    "spa-e2e": "apps/spa-e2e"
+  }
+}

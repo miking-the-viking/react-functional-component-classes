@@ -1,0 +1,28 @@
+{
+  "root": "apps/spa-e2e",
+  "sourceRoot": "apps/spa-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/spa-e2e/cypress.json",
+        "devServerTarget": "spa:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "spa:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/spa-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["spa"]
+}
