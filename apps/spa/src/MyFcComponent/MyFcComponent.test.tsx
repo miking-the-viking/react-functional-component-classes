@@ -1,7 +1,7 @@
+import { VfcParams, stringOfLength } from '../utils';
 import { render } from '@testing-library/react';
 import React from 'react';
 import Colors from '../Colors';
-import { MyClassComponent } from '../MyClassComponent/MyClassComponent';
 import MyFcComponent, {
   COLOR_NOT_SUPPORTED_ERROR,
   MINIMUM_NAME_LENGTH,
@@ -13,17 +13,13 @@ const UNSUPPORTED_COLORS = Object.values(Colors).filter(
   (color) => !SUPPORTED_COLORS.includes(color)
 );
 
-/**
- * A Consistent valid color
- */
 const validColor = Colors.RED;
-
-type VfcParams<T> = T extends React.VFC<infer R> ? R : never;
+const validName = 'Jimmy';
 
 const renderMyFcComponent = ({
-  color,
-  name,
-}: VfcParams<typeof MyFcComponent>) =>
+  color = validColor,
+  name = validName,
+}: Partial<VfcParams<typeof MyFcComponent>>) =>
   render(<MyFcComponent {...{ color, name }} />);
 
 describe('MyFcComponent', () => {
@@ -34,22 +30,27 @@ describe('MyFcComponent', () => {
         it(`Displays the error message ${COLOR_NOT_SUPPORTED_ERROR(
           color
         )}`, () => {
-          expect(false).toBeTruthy();
+          const { getByText } = renderMyFcComponent({ color });
+          getByText(COLOR_NOT_SUPPORTED_ERROR(color));
         });
       }
     );
+
     const unsupportedString = 'unsupported' as Colors;
-    it.todo(
-      `For unknown strings displays the message with that string ${COLOR_NOT_SUPPORTED_ERROR(
-        unsupportedString
-      )}`
-    );
+    it(`For unknown strings displays the message with that string ${COLOR_NOT_SUPPORTED_ERROR(
+      unsupportedString
+    )}`, () => {
+      const color = 'blorange' as Colors;
+      const { getByText } = renderMyFcComponent({ color });
+      getByText(COLOR_NOT_SUPPORTED_ERROR(color));
+    });
   });
   describe('Color application', () => {
     it.each(SUPPORTED_COLORS)(
       `Displays the name text in %s when that color is entered`,
-      () => {
-        expect(false).toBeTruthy();
+      (color) => {
+        const { getByText } = renderMyFcComponent({ color });
+        expect(getByText(validName).style.color).toEqual(color);
       }
     );
   });
@@ -59,12 +60,16 @@ describe('MyFcComponent', () => {
       it.each(Array.from(new Array(MINIMUM_NAME_LENGTH).keys()))(
         `%s characters (Minimum)`,
         (length) => {
-          expect(false).toBeTruthy();
+          const name = stringOfLength(length);
+          const { getByText } = renderMyFcComponent({ name });
+          getByText(PREFIX_DRAFT(name));
         }
       );
     });
-    it(
-      `Displays the name when at least the Minimum Name Length (${MINIMUM_NAME_LENGTH})`
-    );
+    it(`Displays the name when at least the Minimum Name Length (${MINIMUM_NAME_LENGTH})`, () => {
+      const name = stringOfLength(MINIMUM_NAME_LENGTH);
+      const { getByText } = renderMyFcComponent({ name });
+      getByText(name);
+    });
   });
 });

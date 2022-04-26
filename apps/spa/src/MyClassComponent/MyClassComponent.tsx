@@ -5,6 +5,14 @@ type MyComponentProps = {
   color: Colors;
 };
 
+// Total of 1 named exports and one default
+/**
+ * {
+ *  default: MyClassComponent, // React.VFC
+ *  MyClassComponent // Class
+ * }
+ */
+
 export class MyClassComponent {
   static ERRORS = {
     COLOR_NOT_SUPPORTED: (color: Colors) => `${color} is not supported`,
@@ -15,7 +23,7 @@ export class MyClassComponent {
     MyClassComponent.SUPPORTED_COLORS.includes(color);
 
   static MINIMUM_NAME_LENGTH = 2;
-  static PREFIX_DRAFT = `Draft: `;
+  static PREFIX_DRAFT = (name: string) => `Draft: ${name}`;
   static isDraft = (name: string) =>
     name.length < MyClassComponent.MINIMUM_NAME_LENGTH;
 
@@ -25,8 +33,7 @@ export class MyClassComponent {
 
   static NameInColor: React.VFC<MyComponentProps> = ({ name, color }) => (
     <p style={{ color }}>
-      {this.isDraft(name) && this.PREFIX_DRAFT}
-      {name}
+      {this.isDraft(name) ? this.PREFIX_DRAFT(name) : name}
     </p>
   );
 
